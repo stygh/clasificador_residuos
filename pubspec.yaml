@@ -1,0 +1,24 @@
+name: clasificador_residuos
+description: Aplicación Flutter del TFE para clasificar residuos mediante una API de inferencia desplegada en Google Cloud Run.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  http: ^1.6.0
+  image_picker: ^1.2.3
+  image: ^4.9.1
+  path_provider: ^2.1.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

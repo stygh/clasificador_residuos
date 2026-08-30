@@ -1,0 +1,54 @@
+# ---- Proyecto Flutter generado (reproducible con scripts/create_project_windows.ps1) ----
+clasificador_residuos_app/
+
+# ---- Paquete de entrega comprimido ----
+*.zip
+
+# ---- Flutter / Dart ----
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# ---- Android ----
+**/android/.gradle/
+**/android/.kotlin/
+**/android/captures/
+**/android/local.properties
+**/android/key.properties
+*.jks
+*.keystore
+
+# ---- iOS / macOS ----
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/App.framework
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/Generated.xcconfig
+**/Podfile.lock
+**/xcuserdata/
+
+# ---- IDE ----
+.idea/
+.vscode/
+*.iml
+*.iws
+
+# ---- Sistema operativo ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Credenciales: nunca subir ----
+*.pem
+*.key
+*-key.json
+service-account*.json
+.env
+.env.*
