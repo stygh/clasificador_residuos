@@ -1,0 +1,8 @@
+<!-- Insertar dentro de <manifest>, antes de <application>. -->
+<uses-permission android:name="android.permission.INTERNET" />
+
+<!--
+Con image_picker 1.2.3 no se requieren permisos adicionales de cámara o galería
+en Android para el flujo estándar del complemento. No añada permisos de
+almacenamiento heredados salvo que una funcionalidad adicional los necesite.
+-->

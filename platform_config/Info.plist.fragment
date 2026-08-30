@@ -1,0 +1,5 @@
+<!-- Insertar dentro de <dict> en ios/Runner/Info.plist. -->
+<key>NSCameraUsageDescription</key>
+<string>La aplicación necesita acceder a la cámara para fotografiar residuos.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>La aplicación necesita acceder a la galería para seleccionar imágenes.</string>
