@@ -1,0 +1,99 @@
+{
+  "created_at_utc": "2026-08-02T09:12:28.730589+00:00",
+  "architecture": "EfficientNetV2B0",
+  "pretrained_weights": "ImageNet",
+  "tensorflow_version": "2.15.0",
+  "class_names": [
+    "cardboard",
+    "clothes",
+    "glass",
+    "metal",
+    "organic",
+    "paper",
+    "shoes",
+    "trash"
+  ],
+  "number_of_classes": 8,
+  "input_shape": [
+    224,
+    224,
+    3
+  ],
+  "dataset_root": "gs://bkt-reciduos",
+  "dataset_counts": {
+    "train": {
+      "cardboard": 713,
+      "clothes": 4260,
+      "glass": 2016,
+      "metal": 615,
+      "organic": 1604,
+      "paper": 840,
+      "shoes": 1581,
+      "trash": 557
+    },
+    "validation": {
+      "cardboard": 89,
+      "clothes": 533,
+      "glass": 253,
+      "metal": 77,
+      "organic": 200,
+      "paper": 105,
+      "shoes": 198,
+      "trash": 70
+    },
+    "test": {
+      "cardboard": 89,
+      "clothes": 532,
+      "glass": 243,
+      "metal": 77,
+      "organic": 197,
+      "paper": 105,
+      "shoes": 198,
+      "trash": 70
+    }
+  },
+  "hyperparameters": {
+    "batch_size": 32,
+    "epochs_head": 10,
+    "epochs_finetune": 20,
+    "learning_rate_head": 0.001,
+    "learning_rate_finetune": 1e-05,
+    "fine_tune_layers": 40,
+    "dropout": 0.3,
+    "seed": 42,
+    "mixed_precision": false,
+    "class_weights_enabled": true
+  },
+  "class_weights": {
+    "0": 2.136395511921459,
+    "1": 0.35757042253521126,
+    "2": 0.7555803571428571,
+    "3": 2.476829268292683,
+    "4": 0.9496571072319202,
+    "5": 1.8133928571428573,
+    "6": 0.963472485768501,
+    "7": 2.7347396768402152
+  },
+  "test_metrics": {
+    "loss": 0.09775737673044205,
+    "accuracy": 0.9669093489646912,
+    "top_3_accuracy": 0.9980145692825317
+  },
+  "weighted_precision": 0.9676844113315689,
+  "weighted_recall": 0.9669093315684977,
+  "weighted_f1_score": 0.9670709420342237,
+  "roc_auc_per_class": {
+    "cardboard": 0.9993599772436353,
+    "clothes": 0.9995103949864448,
+    "glass": 0.998617439732056,
+    "metal": 0.9980347407125649,
+    "organic": 0.9989646833399006,
+    "paper": 0.9983268983268985,
+    "shoes": 0.9991691476839992,
+    "trash": 0.9991375037176564
+  },
+  "model_dir": "gs://bkt-reciduos/modelos/efficientnetv2b0-v2/model",
+  "output_dir": "gs://bkt-reciduos/resultados/efficientnetv2b0-v2",
+  "checkpoint_dir": "gs://bkt-reciduos/checkpoints/efficientnetv2b0-v2",
+  "tensorboard_dir": "gs://bkt-reciduos/tensorboard/efficientnetv2b0-v2"
+}
