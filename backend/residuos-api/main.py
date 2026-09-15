@@ -7,7 +7,8 @@ from typing import Any
 
 import numpy as np
 import tensorflow as tf
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
+from appcheck import verificar_app_check
 from PIL import Image, UnidentifiedImageError
 from pydantic import BaseModel, Field
 
@@ -245,7 +246,7 @@ def preprocess_image(image_bytes: bytes) -> tf.Tensor:
 # Predicción
 # -------------------------------------------------------
 
-@app.post("/predict")
+@app.post("/predict", dependencies=[Depends(verificar_app_check)])
 def predict(
     request: PredictionRequest,
 ) -> dict[str, Any]:

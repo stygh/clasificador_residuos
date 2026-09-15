@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:http/http.dart' as http;
 
 import '../config/api_config.dart';
@@ -39,13 +40,22 @@ class ApiService {
       'imageBase64': base64Encode(imageBytes),
     };
 
+    final String? tokenAppCheck =
+        await FirebaseAppCheck.instance.getToken();
+    if (tokenAppCheck == null || tokenAppCheck.isEmpty) {
+      throw const ApiException(
+        'No fue posible obtener el testigo de App Check del dispositivo.',
+      );
+    }
+
     try {
       final http.Response response = await _client
           .post(
             ApiConfig.predictUri,
-            headers: const <String, String>{
+            headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
               'Accept': 'application/json',
+              'X-Firebase-AppCheck': tokenAppCheck,
             },
             body: jsonEncode(requestBody),
           )
