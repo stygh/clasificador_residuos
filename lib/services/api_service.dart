@@ -23,6 +23,14 @@ class ApiService {
 
   final http.Client _client;
 
+  /// Duración en milisegundos de la codificación en Base64 de la última
+  /// petición. Se emplea en la campaña de medición del apartado A.8.
+  int? ultimaCodificacionMs;
+
+  /// Duración en milisegundos entre el envío de la petición y la
+  /// recepción completa de la respuesta.
+  int? ultimaRedMs;
+
   Future<PredictionResponse> predict(File imageFile) async {
     if (!await imageFile.exists()) {
       throw const ApiException(
@@ -35,10 +43,13 @@ class ApiService {
       throw const ApiException('La imagen seleccionada está vacía.');
     }
 
+    final Stopwatch cronoCodificacion = Stopwatch()..start();
     final Map<String, dynamic> requestBody = <String, dynamic>{
       'fileName': imageFile.uri.pathSegments.last,
       'imageBase64': base64Encode(imageBytes),
     };
+    cronoCodificacion.stop();
+    ultimaCodificacionMs = cronoCodificacion.elapsedMilliseconds;
 
     final String? tokenAppCheck =
         await FirebaseAppCheck.instance.getToken();
@@ -48,6 +59,7 @@ class ApiService {
       );
     }
 
+    final Stopwatch cronoRed = Stopwatch()..start();
     try {
       final http.Response response = await _client
           .post(
@@ -60,6 +72,8 @@ class ApiService {
             body: jsonEncode(requestBody),
           )
           .timeout(ApiConfig.requestTimeout);
+      cronoRed.stop();
+      ultimaRedMs = cronoRed.elapsedMilliseconds;
 
       final String responseText = utf8.decode(response.bodyBytes);
       final Map<String, dynamic>? responseJson = _decodeJson(responseText);

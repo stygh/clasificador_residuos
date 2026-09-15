@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../models/prediction_response.dart';
 import '../services/api_service.dart';
+import '../config/flujos_residuos.dart';
 import '../utils/image_utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,6 +23,8 @@ class _HomePageState extends State<HomePage> {
   PredictionResponse? _prediction;
   bool _processingImage = false;
   bool _classifying = false;
+  int _tOptimizacionMs = 0;
+  int _contadorMediciones = 0;
 
   bool get _busy => _processingImage || _classifying;
 
@@ -64,7 +67,10 @@ class _HomePageState extends State<HomePage> {
     });
 
     try {
+      final Stopwatch cronoOptimizacion = Stopwatch()..start();
       final File optimized = await ImageUtils.optimize(source);
+      cronoOptimizacion.stop();
+      _tOptimizacionMs = cronoOptimizacion.elapsedMilliseconds;
       if (!mounted) return;
       setState(() {
         _selectedImage = optimized;
@@ -94,12 +100,15 @@ class _HomePageState extends State<HomePage> {
       _prediction = null;
     });
 
+    final Stopwatch cronoTotal = Stopwatch()..start();
     try {
       final PredictionResponse result = await _apiService.predict(image);
       if (!mounted) return;
       setState(() {
         _prediction = result;
       });
+      cronoTotal.stop();
+      _registrarMedicion(cronoTotal.elapsedMilliseconds, result.className);
     } on ApiException catch (error) {
       _showMessage(error.message);
     } catch (_) {
@@ -111,6 +120,20 @@ class _HomePageState extends State<HomePage> {
         });
       }
     }
+  }
+
+  /// Emite una línea por medición para la campaña del apartado A.8.
+  /// LATENCIA_TFE;n;instante;optimizacion;codificacion;red;presentacion;total;categoria
+  void _registrarMedicion(int totalMs, String categoria) {
+    _contadorMediciones += 1;
+    final int codificacion = _apiService.ultimaCodificacionMs ?? -1;
+    final int red = _apiService.ultimaRedMs ?? -1;
+    final int presentacion =
+        (codificacion < 0 || red < 0) ? -1 : totalMs - codificacion - red;
+    debugPrint(
+      'LATENCIA_TFE;$_contadorMediciones;${DateTime.now().toIso8601String()};'
+      '$_tOptimizacionMs;$codificacion;$red;$presentacion;$totalMs;$categoria',
+    );
   }
 
   void _reset() {
@@ -318,6 +341,34 @@ class _ResultCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium,
             ),
+            if (FlujosResiduos.flujoDe(prediction.className) != null) ...<Widget>[
+              const SizedBox(height: 18),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Dónde depositarlo',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      FlujosResiduos.flujoDe(prediction.className)!,
+                      textAlign: TextAlign.center,
+                      style:
+                          Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             if (probabilities.isNotEmpty) ...<Widget>[
               const SizedBox(height: 18),
               const Divider(),
